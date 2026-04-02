@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Carte Observations Papillons - Grand Est</title>
+  <script src="https://cdn.jsdelivr.net/npm/ol@v10.6.1/dist/ol.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.6.1/ol.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dataviz_1.css" >
+</head>
+<body>
+  <!-- Container principal -->
+  <div class="main-container">
+    <!-- En-tête -->
+    <header class="header">
+      <h1>Observations de Papillons dans le Grand Est</h1>
+    </header>
+    <section class="img-container">
+      <div>Parmi tant d'autres, il est possible d'observer les 5 espèces de papillons suivantes dans le Grand Est. Les années entre 2019 et 2023, particulièrement abondantes en observations, ont été mises en valeur dans le cadre de cette visualisation. </div>
+      <div class="key-figures"><img src= "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Inachis_io_Lill-Jansskogen.JPG/640px-Inachis_io_Lill-Jansskogen.JPG" alt="Paon du jour">
+      <div class="caption">Paon du jour</div>
+      </div>
+      <div class="key-figures"><img src= "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Vanessa_atalanta_qtl1.jpg/960px-Vanessa_atalanta_qtl1.jpg?20110405173546" alt="Vulcain">
+      <span class="caption"> Vulcain</span>
+      </div>
+      <div class="key-figures"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Vanessa_cardui_on_Lavandula_angustifolia-2459.jpg/640px-Vanessa_cardui_on_Lavandula_angustifolia-2459.jpg" alt ="Belle dame">
+      <span class="caption">Belle dame</span>
+      </div>
+      <div class="key-figures"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Common_brimstone_butterfly_%28Gonepteryx_rhamni%29_male.jpg/640px-Common_brimstone_butterfly_%28Gonepteryx_rhamni%29_male.jpg" alt = "Citron">
+      <span class="caption">Citron</span>
+      </div>
+      <div class="key-figures"><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kleiner_Fuchs%2C_Aglais_urticae.JPG/640px-Kleiner_Fuchs%2C_Aglais_urticae.JPG"alt ="Petite Tortue">
+      <span class="caption">Petite tortue</span>
+      </div>
+    </section>
+
+
+    <!-- Section Dataviz 1 -->
+    <section class="dataviz-container">
+      <h2>Carte des Observations</h2>
+      <div class="dataviz-content">
+        <div class="controls">
+          <div class="control-group">
+            <strong>Filtrer par espèce :</strong>
+            <div class="buttons">
+             <button class="button-io" onclick="filterSpecies('Aglais io')">Paon du jour</button>
+            <button class="button-atalanta" onclick="filterSpecies('Vanessa atalanta')">Vulcain</button>
+            <button class="button-cardui" onclick="filterSpecies('Vanessa cardui')">Belle Dame</button>
+            <button class="button-rhamni" onclick="filterSpecies('Gonepteryx rhamni')">Citron</button>
+            <button class="button-urticae" onclick="filterSpecies('Aglais urticae')">Petite Tortue</button>
+            <button class="button-all" onclick="filterSpecies('all')">Toutes</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <strong>Filtrer par année :</strong>
+            <div class="slider-container">
+              <input type="range" id="yearRange" min="2019" max="2023" value="2019" step="1" oninput="filterYear(this.value)">
+              <span id="yearLabel">2019</span>
+            </div>
+          </div>
+          <div>Cliquez sur un point de la carte ou tapez le nom d'une commune dans le menu déroulant pour découvrir le nombre d'observations au sein d'une commune.</div>
+        </div>
+        <div id="map" class="map"></div>
+      </div>
+<div class="info-panel">
+  <div class="panel-header">
+    <strong id="panel-title">Nombre d'observations pour la région Grand Est</strong>
+  </div>
+
+  <div class="commune-select">
+    <label for="communeDropdown"><strong>Choisir une commune :</strong></label>
+    <input list="communesList" id="communeDropdown" placeholder="Tapez ou cliquez sur une commune...">
+    <datalist id="communesList"></datalist>
+  </div>
+
+  <div id="chart"></div>
+</div>
+
+    </section>
+
+    <!-- Section Dataviz 2 -->
+    <section class="dataviz-container">
+      <h2>Indice de biodiversité de Shannon</h2>
+      <p class="subtitle">L'Indice de Shannon est un indice qui permet de déterminer la biodiversité présente dans un milieu. 
+        Il prend en compte le nombre d'espèces et l'abondance de chacune d'entre elles à endroit donné (ici la commune). 
+        Plus un milieu contient d'espèces différentes et plus celles-ci sont réparties de manière égale, plus la diversité est grande, donc plus l'indice de Shannon est élevé. 
+        Les données d'obervations ont été utilisées estimer de la biodiversité au sein des communes du Grand Est pour chaque année.</p>
+      <div class="dataviz-content">
+        <div class="controls">
+          <div class="control-group">
+            <strong>Filtrer par année :</strong>
+            <div class="slider-container">
+              <input type="range" id="year-slider-shannon" min="2019" max="2023" step="1" value="2019">
+              <span id="year-label-shannon">2019</span>
+            </div>
+          </div>
+          <div>Survolez une commune pour connaître la valeur de l'indice de biodiversité de Shannon.</div>
+        </div>
+        <div id="map2" class="map">
+          <div id="legend-shannon" class="legend">
+        <strong>Indice de Shannon</strong>
+        <div><span class="color-box" style="background:#fdc3a8ff"></span> Absence de biodiversité (0)</div>
+        <div><span class="color-box" style="background:#ee673eff"></span> Faible (0–0.64]</div>
+        <div><span class="color-box" style="background:#d1451aff"></span> Moyenne (0.64–1.03]</div>
+        <div><span class="color-box" style="background:#682510ff"></span> Forte (>1.03)</div>
+      </div>
+        </div>
+        <div id="shannon-popup"></div>
+      </div>
+    </section>
+    <div>A noter : Les données utilisées correspondent à des observations réalisées par des naturalistes et des passionnés de nature. La fréquence des observations au sein d'une commune est donc influencée par ce fait. L'absence de données ne veut donc pas dire l'absence d'une espèce. 
+      Ainsi, les données ne permettent pas de tirer des conclusions sur la population des papillons mais permettent d'avoir une idée de leur présence sur le territoire.</div>
+  </div>
+
+  <script src="dataviz_1.js"></script>
+</body>
+</html>
